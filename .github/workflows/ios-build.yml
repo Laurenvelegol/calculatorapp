@@ -23,7 +23,12 @@ jobs:
           cd Calculator
           pod install
 
-      # Step 3: Build the iOS project
+      # Step 3: Set iOS Deployment Target (13.0)
+      - name: Set iOS Deployment Target
+        run: |
+          sed -i '' 's/PLATFORM_IOS_DEPLOYMENT_TARGET = .*/PLATFORM_IOS_DEPLOYMENT_TARGET = 13.0;/g' Calculator.xcodeproj/project.pbxproj
+
+      # Step 4: Build the iOS project
       - name: Build iOS Project
         run: |
           xcodebuild -workspace Calculator.xcworkspace \
@@ -34,7 +39,7 @@ jobs:
                      -allowProvisioningUpdates \
                      archive
 
-      # Step 4: Export `.ipa` file
+      # Step 5: Export `.ipa` file
       - name: Export `.ipa` File
         run: |
           xcodebuild -exportArchive \
@@ -42,7 +47,7 @@ jobs:
                      -exportOptionsPlist exportOptions.plist \
                      -exportPath ${{ github.workspace }}/build/
 
-      # Step 5: Save the `.ipa` as an artifact
+      # Step 6: Save the `.ipa` as an artifact
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
