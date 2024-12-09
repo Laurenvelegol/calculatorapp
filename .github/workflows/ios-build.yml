@@ -10,14 +10,20 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest  # GitHub Actions needs macOS to build iOS apps
+    runs-on: macos-latest
 
     steps:
       # Step 1: Checkout the repository code
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Step 3: Build the app
+      # Step 2: Install CocoaPods dependencies
+      - name: Install CocoaPods
+        run: |
+          cd Calculator
+          pod install
+
+      # Step 3: Build the iOS project
       - name: Build iOS Project
         run: |
           xcodebuild -workspace Calculator.xcworkspace \
@@ -25,6 +31,7 @@ jobs:
                      -sdk iphoneos \
                      -configuration Release \
                      -archivePath ${{ github.workspace }}/build/Calculator.xcarchive \
+                     -allowProvisioningUpdates \
                      archive
 
       # Step 4: Export `.ipa` file
@@ -35,11 +42,9 @@ jobs:
                      -exportOptionsPlist exportOptions.plist \
                      -exportPath ${{ github.workspace }}/build/
 
-      # Step 5: Save `.ipa` as an artifact
+      # Step 5: Save the `.ipa` as an artifact
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ios-app
           path: build/Calculator.ipa
-
-          
