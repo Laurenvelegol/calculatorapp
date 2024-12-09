@@ -20,18 +20,18 @@ jobs:
       # Step 3: Build the app
       - name: Build iOS Project
         run: |
-          xcodebuild -workspace YourApp.xcworkspace \
-                     -scheme YourAppScheme \
+          xcodebuild -workspace Calculator.xcworkspace \
+                     -scheme Calculator \
                      -sdk iphoneos \
                      -configuration Release \
-                     -archivePath ${{ github.workspace }}/build/YourApp.xcarchive \
+                     -archivePath ${{ github.workspace }}/build/Calculator.xcarchive \
                      archive
 
       # Step 4: Export `.ipa` file
       - name: Export `.ipa` File
         run: |
           xcodebuild -exportArchive \
-                     -archivePath ${{ github.workspace }}/build/YourApp.xcarchive \
+                     -archivePath ${{ github.workspace }}/build/Calculator.xcarchive \
                      -exportOptionsPlist exportOptions.plist \
                      -exportPath ${{ github.workspace }}/build/
 
@@ -40,6 +40,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ios-app
-          path: build/YourApp.ipa
+          path: build/Calculator.ipa
 
           
