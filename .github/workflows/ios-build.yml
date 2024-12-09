@@ -19,9 +19,9 @@ jobs:
 
       # Step 2: Set up Xcode (Apple's development environment for iOS apps)
       - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v2
-        with:
-          xcode-version: 14  # Specify your required Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with: 
+          xcode-version: 14
 
       # Step 3: Build the app
       - name: Build iOS Project
@@ -47,3 +47,5 @@ jobs:
         with:
           name: ios-app
           path: build/YourApp.ipa
+
+          
