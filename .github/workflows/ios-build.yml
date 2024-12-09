@@ -1,0 +1,49 @@
+name: Build iOS App
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on pushes to the 'main' branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest  # GitHub Actions needs macOS to build iOS apps
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Xcode (Apple's development environment for iOS apps)
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v2
+        with:
+          xcode-version: 14  # Specify your required Xcode version
+
+      # Step 3: Build the app
+      - name: Build iOS Project
+        run: |
+          xcodebuild -workspace YourApp.xcworkspace \
+                     -scheme YourAppScheme \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     -archivePath ${{ github.workspace }}/build/YourApp.xcarchive \
+                     archive
+
+      # Step 4: Export `.ipa` file
+      - name: Export `.ipa` File
+        run: |
+          xcodebuild -exportArchive \
+                     -archivePath ${{ github.workspace }}/build/YourApp.xcarchive \
+                     -exportOptionsPlist exportOptions.plist \
+                     -exportPath ${{ github.workspace }}/build/
+
+      # Step 5: Save `.ipa` as an artifact
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-app
+          path: build/YourApp.ipa
